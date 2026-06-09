@@ -10,6 +10,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     use_camera = LaunchConfiguration('use_camera')
     use_joy = LaunchConfiguration('use_joy')
+    use_ld08 = LaunchConfiguration('use_ld08')
     use_twist_mux = LaunchConfiguration('use_twist_mux')
 
     # 1. 터틀봇3 Bringup 기본 모터 구동 런치
@@ -35,6 +36,7 @@ def generate_launch_description():
         executable='ld08_driver',
         name='ld08_driver',
         output='screen',
+        condition=IfCondition(use_ld08),
         parameters=[{
             'port_name': '/dev/ttyUSB0', # 라이다가 꽂힌 포트 고정
             'frame_id': 'base_scan'
@@ -65,6 +67,10 @@ def generate_launch_description():
             'use_joy',
             default_value='true',
             description='Start joy_node and teleop_twist_joy'),
+        DeclareLaunchArgument(
+            'use_ld08',
+            default_value='false',
+            description='Start standalone LD08 lidar driver. Keep false when turtlebot3_bringup already starts the lidar.'),
         DeclareLaunchArgument(
             'use_twist_mux',
             default_value='true',
