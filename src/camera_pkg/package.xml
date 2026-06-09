@@ -3,13 +3,12 @@
 <package format="3">
   <name>camera_pkg</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="cchyun@gmail.com">cchyun</maintainer>
+  <description>Camera image publisher for TurtleBot</description>
+  <maintainer email="tme@todo.todo">tme</maintainer>
   <license>TODO: License declaration</license>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
-  <depend>std_srvs</depend>
   <depend>cv_bridge</depend>
 
   <test_depend>ament_copyright</test_depend>

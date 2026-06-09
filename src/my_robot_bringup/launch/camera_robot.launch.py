@@ -6,26 +6,35 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # 1. 터틀봇3 Bringup 런처 (기존 패키지 파일 가져오기)
     tb3_launch_dir = os.path.join(get_package_share_directory('turtlebot3_bringup'), 'launch')
-    
+
     turtlebot3_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([tb3_launch_dir, '/robot.launch.py'])
     )
 
-    # 2. 카메라 노드 실행 설정
-    camera_node = Node(
-        package='v4l2_camera',
-        executable='v4l2_camera_node',
-        name='v4l2_camera',
+    joy_node = Node(
+        package='joy',
+        executable='joy_node',
+        name='joy_node',
+        output='screen',
+    )
+
+    teleop_node = Node(
+        package='teleop_twist_joy',
+        executable='teleop_node',
+        name='teleop_twist_joy',
+        output='screen',
         parameters=[{
-            'video_device': '/dev/video0',
-            'image_size': [320, 240],
-            'output_encoding': 'rgb8',
+            'require_enable_button': False,
+            'axis_linear.x': 1,
+            'axis_angular.yaw': 0,
+            'scale_linear.x': 0.20,
+            'scale_angular.yaw': 2.0,
         }]
     )
 
     return LaunchDescription([
         turtlebot3_bringup,
-        camera_node
+        joy_node,
+        teleop_node,
     ])

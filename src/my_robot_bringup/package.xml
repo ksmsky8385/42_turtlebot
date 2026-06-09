@@ -8,8 +8,9 @@
   <license>TODO: License declaration</license>
 
   <depend>rclpy</depend>
-  <depend>v4l2_camera</depend>
   <depend>turtlebot3_bringup</depend>
+  <depend>joy</depend>
+  <depend>teleop_twist_joy</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
