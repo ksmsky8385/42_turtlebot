@@ -10,7 +10,7 @@ twist_mux:
         timeout: 0.5
         priority: 100
     locks:
-      emergency_stop:
-        topic: /emergency_stop
+      manual_override:
+        topic: /manual_override_lock
         timeout: 0.0
-        priority: 255
+        priority: 50
