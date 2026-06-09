@@ -6,10 +6,18 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # 1. 터틀봇3 Bringup 기본 모터 구동 런처
+    # 1. 터틀봇3 Bringup 기본 모터 구동 런치
     tb3_launch_dir = os.path.join(get_package_share_directory('turtlebot3_bringup'), 'launch')
     turtlebot3_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([tb3_launch_dir, '/robot.launch.py'])
+    )
+
+    bringup_launch_dir = os.path.join(get_package_share_directory('my_robot_bringup'), 'launch')
+    joy_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([bringup_launch_dir, '/joy.launch.py'])
+    )
+    twist_mux_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([bringup_launch_dir, '/twist_mux.launch.py'])
     )
 
     # 2. 라이다 노드 강제 포함 (분리되어 있을 경우를 대비)
@@ -28,4 +36,6 @@ def generate_launch_description():
     return LaunchDescription([
         turtlebot3_bringup,
         ld_lidar_node, # 라이다 노드 추가
+        joy_launch,
+        twist_mux_launch,
         ])
