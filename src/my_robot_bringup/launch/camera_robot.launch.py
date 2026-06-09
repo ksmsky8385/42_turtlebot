@@ -22,14 +22,22 @@ def generate_launch_description():
     teleop_node = Node(
         package='teleop_twist_joy',
         executable='teleop_node',
-        name='teleop_twist_joy',
+        name='teleop_node',
         output='screen',
         parameters=[{
             'require_enable_button': False,
-            'axis_linear.x': 1,
-            'axis_angular.yaw': 0,
-            'scale_linear.x': 0.20,
-            'scale_angular.yaw': 2.0,
+            'axis_linear': {
+                'x': 1,
+            },
+            'axis_angular': {
+                'yaw': 0,
+            },
+            'scale_linear': {
+                'x': 0.20,
+            },
+            'scale_angular': {
+                'yaw': 2.0,
+            },
         }]
     )
 
