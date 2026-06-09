@@ -1,11 +1,17 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 def generate_launch_description():
+    use_camera = LaunchConfiguration('use_camera')
+    use_joy = LaunchConfiguration('use_joy')
+    use_twist_mux = LaunchConfiguration('use_twist_mux')
+
     # 1. 터틀봇3 Bringup 기본 모터 구동 런치
     tb3_launch_dir = os.path.join(get_package_share_directory('turtlebot3_bringup'), 'launch')
     turtlebot3_bringup = IncludeLaunchDescription(
@@ -14,10 +20,12 @@ def generate_launch_description():
 
     bringup_launch_dir = os.path.join(get_package_share_directory('my_robot_bringup'), 'launch')
     joy_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([bringup_launch_dir, '/joy.launch.py'])
+        PythonLaunchDescriptionSource([bringup_launch_dir, '/joy.launch.py']),
+        condition=IfCondition(use_joy),
     )
     twist_mux_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([bringup_launch_dir, '/twist_mux.launch.py'])
+        PythonLaunchDescriptionSource([bringup_launch_dir, '/twist_mux.launch.py']),
+        condition=IfCondition(use_twist_mux),
     )
 
     # 2. 라이다 노드 강제 포함 (분리되어 있을 경우를 대비)
@@ -33,9 +41,37 @@ def generate_launch_description():
         }]
     )
 
+    camera_node = Node(
+        package='my_robot_bringup',
+        executable='camera_pub',
+        name='camera_image_publisher',
+        output='screen',
+        condition=IfCondition(use_camera),
+        parameters=[{
+            'publish_rate': 10.0,
+            'topic_name': 'image_raw',
+            'image_size': [320, 240],
+            'camera_index': 0,
+            'frame_id': 'camera_link',
+        }],
+    )
+
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'use_camera',
+            default_value='true',
+            description='Start camera image publisher'),
+        DeclareLaunchArgument(
+            'use_joy',
+            default_value='true',
+            description='Start joy_node and teleop_twist_joy'),
+        DeclareLaunchArgument(
+            'use_twist_mux',
+            default_value='true',
+            description='Start twist_mux for /cmd_vel arbitration'),
         turtlebot3_bringup,
         ld_lidar_node, # 라이다 노드 추가
+        camera_node,
         joy_launch,
         twist_mux_launch,
         ])

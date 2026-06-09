@@ -29,6 +29,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'camera_pub = my_robot_bringup.image_publisher:main',
         ],
     },
 )
