@@ -42,6 +42,10 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'toggle_button': 9,
+            'fall_center_deadband': 0.12,
+            'fall_angular_gain': 0.8,
+            'fall_max_angular_speed': 0.45,
+            'fall_target_timeout': 0.6,
         }],
     )
 
