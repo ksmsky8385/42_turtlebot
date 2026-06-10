@@ -35,7 +35,18 @@ def generate_launch_description():
         }]
     )
 
+    joy_nav_controller = Node(
+        package='my_robot_bringup',
+        executable='joy_nav_controller',
+        name='joy_nav_controller',
+        output='screen',
+        parameters=[{
+            'toggle_button': 9,
+        }],
+    )
+
     return LaunchDescription([
         joy_node,
         teleop_node,
+        joy_nav_controller,
     ])

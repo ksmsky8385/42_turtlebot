@@ -31,6 +31,7 @@ setup(
     entry_points={
         'console_scripts': [
             'camera_pub = my_robot_bringup.image_publisher:main',
+            'joy_nav_controller = my_robot_bringup.joy_nav_controller:main',
         ],
     },
 )
